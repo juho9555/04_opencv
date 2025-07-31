@@ -3,7 +3,7 @@ import numpy as np
 import os
 import datetime
 
-save_dir = "extracted_plates"
+save_dir = "../extracted_plates"
 
 def process_images(image_paths):
     win_name = "scanning" # 스캔하는 창 이름 
@@ -42,8 +42,7 @@ def process_images(image_paths):
                     pts1 = np.float32([topLeft, topRight, bottomRight, bottomLeft])
 
                     # scan된 번호판 크기 정렬
-                    width = 300
-                    height = 150
+                    width, height = 300, 150
 
                     #변환 후 좌표(0,0) 기준 모서리 지정
                     pts2 = np.float32([[0, 0], [width-1, 0], [width-1, height-1], [0, height-1]])
@@ -55,7 +54,7 @@ def process_images(image_paths):
                     
                     # 저장 파일명 설정 - 방식 1: 타임스탬프 기반
                     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-                    filename = f"plate_{timestamp}.jpg"
+                    filename = f"plate_{timestamp}.png"
 
                     # 저장 경로
                     save_path = os.path.join(save_dir, filename)
