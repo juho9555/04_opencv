@@ -30,4 +30,17 @@ def process_plate_image(img_path):
     save_path = os.path.join(output_dir, base_name)
     cv2.imwrite(save_path, contour_img)
     print(f'저장 완료: {save_path}')
-    
+
+# 연속된 이미지를 처리하기위한 함수 정의
+def process_all():
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    image_files = [f for f in os.listdir(input_dir) if f.startswith('car') and f.endswith('.png')]
+    image_paths = [os.path.join(input_dir, f) for f in sorted(image_files)]
+
+    for path in image_paths:
+        process_plate_image(path)
+
+if __name__ == "__main__":
+    process_all()
