@@ -16,3 +16,8 @@ def process_plate_image(img_path):
     gray_eq = cv2.equalizeHist(gray) # 히스토그램 평활화
 
     blurred = cv2.GaussianBlur(gray_eq, (5, 5), 0) # 가우시안 블러 적용
+
+    # 적응형 임계처리
+    thresh = cv2.adaptiveThreshold(blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
+
+    
