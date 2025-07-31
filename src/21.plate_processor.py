@@ -10,32 +10,27 @@ def process_plate_image(img_path):
     if img is None:
         print(f'이미지 불러오기 실패: {img_path}')
         return
-    
+
+    # 1. 그레이스케일 변환
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    gray_eq = cv2.equalizeHist(gray) # 히스토그램 평활화
+    # 2. 가우시안 블러 (노이즈 제거)
+    blurred = cv2.GaussianBlur(gray, (7, 7), 0)
 
-    blurred = cv2.GaussianBlur(gray_eq, (5, 5), 0) # 가우시안 블러 적용
+    # 3. 고정 임계값 이진화 (adaptive threshold 대신)
+    _, binary = cv2.threshold(blurred, 120, 255, cv2.THRESH_BINARY_INV)
 
-    # 적응형 임계처리
-    thresh = cv2.adaptiveThreshold(blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
-
-    # 윤곽선 검출
-    contours, _ = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    contour_img = cv2.cvtColor(thresh, cv2.COLOR_GRAY2BGR)
-    cv2.drawContours(contour_img, contours, -1, (0, 255, 0), 1)
-
-    # 결과 저장
+    # 4. 저장
     base_name = os.path.basename(img_path)
     save_path = os.path.join(output_dir, base_name)
-    cv2.imwrite(save_path, contour_img)
+    cv2.imwrite(save_path, binary)
     print(f'저장 완료: {save_path}')
 
-# 연속된 이미지를 처리하기위한 함수 정의
 def process_all():
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
+    # 파일명이 'car'로 시작하고 .png인 것만 처리
     image_files = [f for f in os.listdir(input_dir) if f.startswith('car') and f.endswith('.png')]
     image_paths = [os.path.join(input_dir, f) for f in sorted(image_files)]
 
