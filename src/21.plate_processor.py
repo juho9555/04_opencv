@@ -20,4 +20,7 @@ def process_plate_image(img_path):
     # 적응형 임계처리
     thresh = cv2.adaptiveThreshold(blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
 
-    
+    # 윤곽선 검출
+    contours, _ = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contour_img = cv2.cvtColor(thresh, cv2.COLOR_GRAY2BGR)
+    cv2.drawContours(contour_img, contours, -1, (0, 255, 0), 1)
