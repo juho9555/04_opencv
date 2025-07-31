@@ -78,3 +78,10 @@ def process_images(image_paths):
             elif key == 27:  # ESC 키 누르면 종료
                 exit()
         cv2.destroyAllWindows()
+
+# 이미지 경로 리스트 정의 (이건 경로에 맞게 수정하세요)
+image_paths = [f'../img/car0{i}.jpg' for i in range(1, 6)]
+
+
+# 함수 실행
+process_images(image_paths)
