@@ -46,5 +46,35 @@ def process_images(image_paths):
                     height = 150
 
                     #변환 후 좌표(0,0) 기준 모서리 지정
-                    pts2 = np.float32([[0, 0], [width-1, 0],
-                                       [width-1, height-1], [0, height-1]])
+                    pts2 = np.float32([[0, 0], [width-1, 0], [width-1, height-1], [0, height-1]])
+                    
+                    # 원근 변환 행렬
+                    mtrx = cv2.getPerspectiveTransform(pts1, pts2)
+                    # 원근 변환 적용 및 출력
+                    result = cv2.warpPerspective(img, mtrx, (width, height))
+                    
+                    # 저장 파일명 설정 - 방식 1: 타임스탬프 기반
+                    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                    filename = f"plate_{timestamp}.jpg"
+
+                    # 저장 경로
+                    save_path = os.path.join(save_dir, filename)
+
+                    # 이미지 저장
+                    success = cv2.imwrite(save_path, result)
+                    if success:
+                        print(f"번호판 저장 완료: {save_path}")
+                        cv2.imshow('Extracted Plate', result)
+                    else:
+                        print("저장 실패!")
+
+        cv2.imshow(win_name, draw)
+        cv2.setMouseCallback(win_name, onMouse)
+        
+        while True:
+            key = cv2.waitKey(1)
+            if pts_cnt == 4:  # Enter 키 누르면 다음 이미지
+                break
+            elif key == 27:  # ESC 키 누르면 종료
+                exit()
+        cv2.destroyAllWindows()
