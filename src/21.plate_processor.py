@@ -24,3 +24,10 @@ def process_plate_image(img_path):
     contours, _ = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     contour_img = cv2.cvtColor(thresh, cv2.COLOR_GRAY2BGR)
     cv2.drawContours(contour_img, contours, -1, (0, 255, 0), 1)
+
+    # 결과 저장
+    base_name = os.path.basename(img_path)
+    save_path = os.path.join(output_dir, base_name)
+    cv2.imwrite(save_path, contour_img)
+    print(f'저장 완료: {save_path}')
+    
